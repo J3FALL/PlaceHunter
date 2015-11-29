@@ -22,7 +22,7 @@ public class FavouriteFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.map_fragment, container, false);
+        View view = inflater.inflate(R.layout.fav_fragment, container, false);
         return view;
 
 

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorPrimaryDark));
         tabLayout.setSelectedTabIndicatorHeight(5);
-
         fabButton = (FloatingActionButton) findViewById(R.id.fab);
     }
 
