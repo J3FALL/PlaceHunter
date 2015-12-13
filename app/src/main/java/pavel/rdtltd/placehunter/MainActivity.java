@@ -1,5 +1,6 @@
 package pavel.rdtltd.placehunter;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -11,13 +12,25 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.View;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import pavel.rdtltd.placehunter.models.Marker;
+import pavel.rdtltd.placehunter.network.RestAPI;
+import pavel.rdtltd.placehunter.ui.createmarker.CreateMarkerActivity;
 import pavel.rdtltd.placehunter.ui.main.fragments.FavouriteFragment;
 import pavel.rdtltd.placehunter.ui.main.fragments.MapFragment;
 import pavel.rdtltd.placehunter.ui.main.fragments.TopFragment;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,7 +56,55 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorPrimaryDark));
         tabLayout.setSelectedTabIndicatorHeight(5);
+
         fabButton = (FloatingActionButton) findViewById(R.id.fab);
+        fabButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CreateMarkerActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+        /*Marker marker = new Marker();
+        marker.setTitle("yo");
+        marker.setSnippet("Loh");
+        marker.setType("shmal");
+        marker.setRateUp(1231231);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://192.168.0.100:3030")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        RestAPI api = retrofit.create(RestAPI.class);
+        Call<String> call = api.createMarker(marker);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Response<String> response, Retrofit retrofit) {
+                System.out.println(response.code());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                System.out.println(t.toString());
+            }
+        });*/
+        /*RestAPI api = retrofit.create(RestAPI.class);
+        Call<Marker> call = api.getMarker(1);
+        call.enqueue(new Callback<Marker>() {
+            @Override
+            public void onResponse(Response<Marker> response, Retrofit retrofit) {
+                System.out.println(gson.toJson(response.body()));
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });*/
     }
 
     private void setupViewPager(ViewPager viewPager) {
