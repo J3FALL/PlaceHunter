@@ -88,7 +88,6 @@
 
             </android.support.design.widget.TextInputLayout>
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,19 +103,19 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/durationBar" />
 
-
+            <ImageButton
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="300dp"
+                android:layout_height="50dp"
+                android:text="JOPAGOVNO"
+                android:textColor="#FFFFFF"
+                android:textSize="20dp"
+                android:background="@drawable/hz"/>
         </LinearLayout>
+
 
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        app:elevation="6dp"
-        app:backgroundTint="@color/colorPrimary"
-        app:pressedTranslationZ="12dp"/>
 </android.support.design.widget.CoordinatorLayout>

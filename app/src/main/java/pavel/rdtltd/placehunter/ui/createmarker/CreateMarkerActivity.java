@@ -63,7 +63,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
         inputDesc = (EditText) findViewById(R.id.inputDesc);
         durationBar = (AppCompatSeekBar) findViewById(R.id.durationBar);
         durationView = (TextView) findViewById(R.id.durationView);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.hide();
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +97,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
                     });
                 }
             }
-        });
+        });*/
         inputTitle.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -173,7 +173,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
             if (title.equals("")) {
                 inputLayoutTitle.setErrorEnabled(true);
                 inputLayoutTitle.setError("Title is required");
-                fab.hide();
+                //fab.hide();
 
                 return false;
             } else {
@@ -187,7 +187,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
                 return false;
             } else {
                 inputLayoutTitle.setErrorEnabled(false);
-                fab.show();
+                //fab.show();
                 return true;
             }
         }

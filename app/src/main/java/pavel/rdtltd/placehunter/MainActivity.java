@@ -8,10 +8,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.gson.Gson;
@@ -38,25 +40,25 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private FloatingActionButton fabButton;
-
+    private int status;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        status = 0;
+        toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
         setSupportActionBar(toolbar);
-
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        /*viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorPrimaryDark));
         tabLayout.setSelectedTabIndicatorHeight(5);
-
+        */
         fabButton = (FloatingActionButton) findViewById(R.id.fab);
         fabButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +68,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        //final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
 
         /*Marker marker = new Marker();
         marker.setTitle("yo");
@@ -105,6 +108,21 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });*/
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        if (menuItem.getItemId() == android.R.id.home) {
+            if (status == 0) {
+                toolbar.setNavigationIcon(R.mipmap.ic_action_arrow_back);
+                status = 1;
+            } else {
+                toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
+                status = 0;
+            }
+
+        }
+        return super.onOptionsItemSelected(menuItem);
     }
 
     private void setupViewPager(ViewPager viewPager) {
