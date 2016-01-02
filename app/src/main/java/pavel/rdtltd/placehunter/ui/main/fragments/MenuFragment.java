@@ -9,12 +9,17 @@ import android.view.ViewGroup;
 import pavel.rdtltd.placehunter.R;
 
 /**
- * Created by PAVEL on 29.11.2015.
+ * Created by PAVEL on 23.12.2015.
  */
-public class FavouriteFragment extends Fragment {
+public class MenuFragment extends Fragment {
 
-    public FavouriteFragment() {
+    public MenuFragment() {
 
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
