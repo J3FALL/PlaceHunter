@@ -12,9 +12,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.LinearLayout;
@@ -35,6 +38,8 @@ import pavel.rdtltd.placehunter.ui.main.fragments.FavouriteFragment;
 import pavel.rdtltd.placehunter.ui.main.fragments.MapFragment;
 import pavel.rdtltd.placehunter.ui.main.fragments.MenuFragment;
 import pavel.rdtltd.placehunter.ui.main.fragments.TopFragment;
+import pavel.rdtltd.placehunter.ui.view.GestureListener;
+import pavel.rdtltd.placehunter.ui.view.OnFlingGestureListener;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView text1, text2, text3, text4;
     private LinearLayout ll;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
         status = 0;
         toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
+        toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMenu();
+            }
+        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         /*viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -90,12 +102,18 @@ public class MainActivity extends AppCompatActivity {
         text3 = (TextView) findViewById(R.id.text3);
         text4 = (TextView) findViewById(R.id.text4);
 
-
+        linearLayout.setOnTouchListener(new OnFlingGestureListener() {
+            @Override
+            public void onBottomToTop() {
+                showMenu();
+            }
+        });
         linearLayout.setVisibility(View.GONE);
         text1.setVisibility(View.GONE);
         text2.setVisibility(View.GONE);
         text3.setVisibility(View.GONE);
         text4.setVisibility(View.GONE);
+
 
         ll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
     public void slideToBottom(View view){
         //TranslateAnimation animate = new TranslateAnimation(0, 0, 130, 0);
         ScaleAnimation animate = new ScaleAnimation(1f, 1f, 0f, 1f);
+        animate.setInterpolator(new AccelerateDecelerateInterpolator());
         //TranslateAnimation animate = new TranslateAnimation(0,0,0,view.getHeight());
         animate.setDuration(250);
         animate.setFillAfter(true);
@@ -183,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void slideToTop(final View view){
         ScaleAnimation animate = new ScaleAnimation(1f, 1f, 1f, 0f);
+        animate.setInterpolator(new AccelerateDecelerateInterpolator());
         animate.setDuration(250);
         animate.setFillAfter(true);
         animate.setFillEnabled(false);
@@ -209,25 +229,27 @@ public class MainActivity extends AppCompatActivity {
         view.setVisibility(View.VISIBLE);
 
     }
+
+    private void showMenu() {
+        if (status == 0) {
+            toolbar.setNavigationIcon(R.mipmap.ic_action_arrow_back);
+            status = 1;
+            slideToBottom(linearLayout);
+            //fragmentTransaction.addToBackStack(null);
+        } else {
+            slideToTop(linearLayout);
+            toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
+            status = 0;
+
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
 
 
         if (menuItem.getItemId() == android.R.id.home) {
-
+            showMenu();
             //fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up, R.anim.slide_down, R.anim.slide_up);
-            if (status == 0) {
-                toolbar.setNavigationIcon(R.mipmap.ic_action_arrow_back);
-                status = 1;
-                slideToBottom(linearLayout);
-                //fragmentTransaction.addToBackStack(null);
-            } else {
-                slideToTop(linearLayout);
-                toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
-                status = 0;
-
-
-            }
             //fragmentTransaction.commit();
         }
         return super.onOptionsItemSelected(menuItem);
