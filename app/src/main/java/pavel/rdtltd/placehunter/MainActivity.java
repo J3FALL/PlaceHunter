@@ -2,31 +2,46 @@ package pavel.rdtltd.placehunter;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,17 +64,8 @@ import retrofit.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager viewPager;
-    private FloatingActionButton fabButton;
-    private MenuFragment menuFragment;
-    private TopFragment topFragment;
-    private android.support.v4.app.FragmentTransaction fragmentTransaction;
-    private int status;
 
-    private LinearLayout linearLayout;
-    private TextView text1, text2, text3, text4;
-    private LinearLayout ll;
+    private int status;
 
 
     @Override
@@ -67,17 +73,48 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar_actionbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         status = 0;
-        toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
-        toolbar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showMenu();
-            }
-        });
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("YOUR");
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName("ALL");
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName("FAVOURITE");
+        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withName("FRIEND'S");
+        AccountHeader header = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withDividerBelowHeader(false)
+                .build();
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        final DisplayMetrics displayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels / 2;
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withAccountHeader(header)
+                .withDrawerWidthDp(width)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new DividerDrawerItem(),
+                        item1,
+                        new DividerDrawerItem(),
+                        item2,
+                        new DividerDrawerItem(),
+                        item3,
+                        new DividerDrawerItem(),
+                        item4,
+                        new DividerDrawerItem()
+                )
+                .build();
+        // Set the list's click listener
+
         /*viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -87,40 +124,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.colorPrimaryDark));
         tabLayout.setSelectedTabIndicatorHeight(5);
         */
-        fabButton = (FloatingActionButton) findViewById(R.id.fab);
-        fabButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateMarkerActivity.class);
-                startActivity(intent);
-            }
-        });
-        linearLayout = (LinearLayout) findViewById(R.id.menu);
-        ll = (LinearLayout) findViewById(R.id.ll);
-        text1 = (TextView) findViewById(R.id.text1);
-        text2 = (TextView) findViewById(R.id.text2);
-        text3 = (TextView) findViewById(R.id.text3);
-        text4 = (TextView) findViewById(R.id.text4);
 
-        linearLayout.setOnTouchListener(new OnFlingGestureListener() {
-            @Override
-            public void onBottomToTop() {
-                showMenu();
-            }
-        });
-        linearLayout.setVisibility(View.GONE);
-        text1.setVisibility(View.GONE);
-        text2.setVisibility(View.GONE);
-        text3.setVisibility(View.GONE);
-        text4.setVisibility(View.GONE);
-
-
-        ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //System.out.println("!!!");
-            }
-        });
         //final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
         /*Marker marker = new Marker();
         marker.setTitle("yo");
@@ -160,8 +164,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        menuFragment = new MenuFragment();
-        topFragment = new TopFragment();
+        Intent intent = new Intent(this, CreateMarkerActivity.class);
+        startActivity(intent);
     }
 
 
@@ -170,131 +174,11 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    public void slideToBottom(View view){
-        //TranslateAnimation animate = new TranslateAnimation(0, 0, 130, 0);
-        ScaleAnimation animate = new ScaleAnimation(1f, 1f, 0f, 1f);
-        animate.setInterpolator(new AccelerateDecelerateInterpolator());
-        //TranslateAnimation animate = new TranslateAnimation(0,0,0,view.getHeight());
-        animate.setDuration(250);
-        animate.setFillAfter(true);
-        animate.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
 
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                text1.setVisibility(View.VISIBLE);
-                text2.setVisibility(View.VISIBLE);
-                text3.setVisibility(View.VISIBLE);
-                text4.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        view.startAnimation(animate);
-        view.setVisibility(View.GONE);
-    }
-
-    public void slideToTop(final View view){
-        ScaleAnimation animate = new ScaleAnimation(1f, 1f, 1f, 0f);
-        animate.setInterpolator(new AccelerateDecelerateInterpolator());
-        animate.setDuration(250);
-        animate.setFillAfter(true);
-        animate.setFillEnabled(false);
-        animate.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                text1.setVisibility(View.GONE);
-                text2.setVisibility(View.GONE);
-                text3.setVisibility(View.GONE);
-                text4.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                view.layout(0, 0, 0, 0);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        view.startAnimation(animate);
-        view.setVisibility(View.VISIBLE);
-
-    }
-
-    private void showMenu() {
-        if (status == 0) {
-            toolbar.setNavigationIcon(R.mipmap.ic_action_arrow_back);
-            status = 1;
-            slideToBottom(linearLayout);
-            //fragmentTransaction.addToBackStack(null);
-        } else {
-            slideToTop(linearLayout);
-            toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
-            status = 0;
-
-        }
-    }
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-
-
-        if (menuItem.getItemId() == android.R.id.home) {
-            showMenu();
-            //fragmentTransaction.setCustomAnimations(R.anim.slide_down, R.anim.slide_up, R.anim.slide_down, R.anim.slide_up);
-            //fragmentTransaction.commit();
-        }
-        return super.onOptionsItemSelected(menuItem);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
-    private void toggleMenu() {
-            android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            //ft.setCustomAnimations(R.anim.slide_down, R.anim.slide_up);
-            //ft.replace(R.id.fragmentContainer, new MenuFragment());
-            ft.commit();
-    }
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new FavouriteFragment(), "Favourite");
-        adapter.addFragment(new MapFragment(), "Map");
-       // adapter.addFragment(new TopFragment(), "Topchik");
-        viewPager.setAdapter(adapter);
-    }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
 }
