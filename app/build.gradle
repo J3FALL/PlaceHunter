@@ -36,4 +36,6 @@ dependencies {
     compile('com.mikepenz:materialdrawer:4.6.3@aar') {
         transitive = true
     }
+
+    compile 'com.code-troopers.betterpickers:library:2.2.2'
 }

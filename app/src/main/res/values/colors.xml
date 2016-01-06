@@ -11,4 +11,7 @@
     <color name="material_drawer_divider">#1E88E5</color>
     <color name="material_drawer_primary_text">#FFFFFF</color>
     <color name="material_drawer_selected_text">#FFFFFF</color>
+
+    <color name="dialog_text_pressed">#ffffff</color>
+    <color name="dialog_text_unpressed">#6bb1ee</color>
 </resources>

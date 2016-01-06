@@ -1,0 +1,77 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@color/colorAccent"
+    android:gravity="center"
+    android:weightSum="100">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="25"
+        android:orientation="vertical">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_weight="50">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/hourView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="H"
+                android:textColor="@color/dialog_text_pressed"
+                android:textSize="35dp"/>
+            <TextView
+                android:id="@+id/weekView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:text="W"
+                android:textColor="@color/dialog_text_unpressed"
+                android:textSize="35dp"/>
+            <TextView
+                android:id="@+id/monthView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:text="M"
+                android:textColor="@color/dialog_text_unpressed"
+                android:textSize="35dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:gravity="center">
+
+            <NumberPicker
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:touchscreenBlocksFocus="false">
+
+            </NumberPicker>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="25">
+    </LinearLayout>
+</LinearLayout>
+
+
+

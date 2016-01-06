@@ -29,5 +29,11 @@
         <item name="android:layout_height">1dp</item>
         <item name="android:background">?android:attr/listDivider</item>
     </style>
+    
+    <style name="AppTheme.DialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/dialog_text_pressed</item>
+        <item name="android:textColorPrimary">@color/dialog_text_pressed</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
 
 </resources>
