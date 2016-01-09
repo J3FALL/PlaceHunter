@@ -14,4 +14,5 @@
 
     <color name="dialog_text_pressed">#ffffff</color>
     <color name="dialog_text_unpressed">#6bb1ee</color>
+    <color name="black_background">#000000</color>
 </resources>

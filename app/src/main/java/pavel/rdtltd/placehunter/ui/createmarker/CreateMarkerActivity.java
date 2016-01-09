@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
@@ -29,8 +31,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.codetroopers.betterpickers.hmspicker.HmsPickerBuilder;
-import com.codetroopers.betterpickers.numberpicker.NumberPickerBuilder;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -48,31 +48,42 @@ import retrofit.Retrofit;
  */
 public class CreateMarkerActivity extends AppCompatActivity {
 
-    private ImageButton back;
     private LinearLayout picker;
-
+    private Toolbar toolbar;
+    private LinearLayout snapshot, background;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_marker);
 
+        snapshot = (LinearLayout) findViewById(R.id.snapshot);
+        background = (LinearLayout) findViewById(R.id.background);
+
+        setBackground();
         //Typeface typeface = Typeface.createFromAsset(getAssets(), "font/Roboto-Thin.ttf");
 
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setTitle(R.string.create_marker_title);
+            toolbar.setNavigationIcon(R.mipmap.ic_clear_white_24dp);
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+        //bindViews();
+        //setOnClickListeners();
 
 
-        bindViews();
-        setOnClickListeners();
     }
 
 
+    private void setBackground() {
+        Drawable bitmapDrawable =   getDrawable(R.drawable.background);
+        bitmapDrawable.setAlpha(210);
+        background.setBackground(bitmapDrawable);
+    }
     private void setOnClickListeners() {
 
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
 
         picker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +94,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        back = (ImageButton) findViewById(R.id.back);
-        picker = (LinearLayout) findViewById(R.id.picker);
+        //picker = (LinearLayout) findViewById(R.id.picker);
     }
 
     private void showLifetimeDialog() {
@@ -136,16 +146,21 @@ public class CreateMarkerActivity extends AppCompatActivity {
                 });
         builder.show();
     }
-    /*@Override
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.basic_menu, menu);
+        //getMenuInflater().inflate(R.menu.basic_menu, menu);
         return super.onCreateOptionsMenu(menu);
-    }*/
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.home: {
+                onBackPressed();
+            }
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 }
