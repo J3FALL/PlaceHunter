@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+        //test git
         Intent intent = new Intent(this, CreateMarkerActivity.class);
         startActivity(intent);
     }
