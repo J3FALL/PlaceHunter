@@ -56,11 +56,12 @@ import retrofit.Retrofit;
 public class CreateMarkerActivity extends AppCompatActivity {
 
     private static final int TAKE_PICTURE_CODE = 0;
-    private int pickerStatus = 0;
+    private int pickerStatus = 0, pickerValue = 2;
     private LinearLayout picker;
     private Toolbar toolbar;
     private LinearLayout snapshot, background;
     private ImageView pictureView;
+    private TextView lifetimeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +84,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
         bindViews();
         setOnClickListeners();
         setBackground();
+
+        updateLifetimeView();
     }
 
 
@@ -116,6 +119,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
         snapshot = (LinearLayout) findViewById(R.id.snapshot);
         background = (LinearLayout) findViewById(R.id.background);
         pictureView = (ImageView) findViewById(R.id.pictureView);
+        lifetimeView = (TextView) findViewById(R.id.lifetimeView);
     }
 
     private void showLifetimeDialog() {
@@ -131,15 +135,12 @@ public class CreateMarkerActivity extends AppCompatActivity {
         monthView = (TextView) view.findViewById(R.id.monthView);
         numberPicker = (NumberPicker) view.findViewById(R.id.numberPicker);
         setNumberPickerTextColor(numberPicker, getResources().getColor(R.color.white));
-
         hourView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //hours
                 pickerStatus = 0;
-                numberPicker.setMinValue(1);
-                numberPicker.setMaxValue(24);
-                numberPicker.setValue(12);
+                setPickerValues(numberPicker, 1, 24, 12);
                 hourView.setTextColor(getResources().getColor(R.color.dialog_text_pressed));
                 weekView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
                 monthView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
@@ -150,9 +151,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //weeks
                 pickerStatus = 1;
-                numberPicker.setMinValue(1);
-                numberPicker.setMaxValue(4);
-                numberPicker.setValue(1);
+                setPickerValues(numberPicker, 1, 4, 1);
                 hourView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
                 weekView.setTextColor(getResources().getColor(R.color.dialog_text_pressed));
                 monthView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
@@ -163,9 +162,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //month
                 pickerStatus = 2;
-                numberPicker.setMinValue(1);
-                numberPicker.setMaxValue(12);
-                numberPicker.setValue(2);
+                setPickerValues(numberPicker, 1, 12, 2);
                 hourView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
                 weekView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
                 monthView.setTextColor(getResources().getColor(R.color.dialog_text_pressed));
@@ -175,7 +172,10 @@ public class CreateMarkerActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        pickerValue = numberPicker.getValue();
+                        updateLifetimeView();
                         dialog.dismiss();
+
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -188,8 +188,40 @@ public class CreateMarkerActivity extends AppCompatActivity {
         //numberPicker.setDisplayedValues(values);
 
         builder.show();
+
+        //System.out.println(pickerStatus);
+        switch (pickerStatus) {
+            case 0: setPickerValues(numberPicker, 1, 24, pickerValue);
+                    hourView.setTextColor(getResources().getColor(R.color.dialog_text_pressed));
+                    weekView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
+                    monthView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
+                    break;
+            case 1: setPickerValues(numberPicker, 1, 4, pickerValue);
+                    hourView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
+                    weekView.setTextColor(getResources().getColor(R.color.dialog_text_pressed));
+                    monthView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
+                    break;
+            case 2: setPickerValues(numberPicker, 1, 12, pickerValue);
+                    hourView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
+                    weekView.setTextColor(getResources().getColor(R.color.dialog_text_unpressed));
+                    monthView.setTextColor(getResources().getColor(R.color.dialog_text_pressed));
+                    break;
+        }
     }
 
+    private void updateLifetimeView() {
+        String result = "";
+        switch (pickerStatus) {
+            case 0: result = String.valueOf(pickerValue) + " HR";
+                    break;
+            case 1: result = String.valueOf(pickerValue) + " W";
+                    break;
+            case 2: result = String.valueOf(pickerValue) + " M";
+                    break;
+        }
+
+        lifetimeView.setText(result);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //getMenuInflater().inflate(R.menu.basic_menu, menu);
@@ -222,7 +254,11 @@ public class CreateMarkerActivity extends AppCompatActivity {
         }
     }
 
-
+    public static void setPickerValues(NumberPicker numberPicker, int minValue, int maxValue, int currentValue) {
+        numberPicker.setMinValue(minValue);
+        numberPicker.setMaxValue(maxValue);
+        numberPicker.setValue(currentValue);
+    }
     public static boolean setNumberPickerTextColor(NumberPicker numberPicker, int color)
     {
         final int count = numberPicker.getChildCount();
