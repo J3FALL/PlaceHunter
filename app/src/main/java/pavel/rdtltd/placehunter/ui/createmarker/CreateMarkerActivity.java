@@ -36,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.dd.CircularProgressButton;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -62,7 +63,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
     private LinearLayout snapshot, background;
     private ImageView pictureView;
     private TextView lifetimeView;
-
+    private CircularProgressButton publish;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +86,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
         setOnClickListeners();
         setBackground();
 
+        //publish.setIndeterminateProgressMode(true);
+        //publish.setProgress(50);
         updateLifetimeView();
     }
 
@@ -120,6 +123,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
         background = (LinearLayout) findViewById(R.id.background);
         pictureView = (ImageView) findViewById(R.id.pictureView);
         lifetimeView = (TextView) findViewById(R.id.lifetimeView);
+        publish = (CircularProgressButton) findViewById(R.id.publish);
     }
 
     private void showLifetimeDialog() {
