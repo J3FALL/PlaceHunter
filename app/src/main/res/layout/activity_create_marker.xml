@@ -30,6 +30,7 @@
                android:layout_weight="40">
 
                 <ImageView
+                    android:id="@+id/pictureView"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:background="@drawable/add_picture"
