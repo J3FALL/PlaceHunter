@@ -175,7 +175,11 @@
                 android:layout_weight="10"
                 app:cpb_textComplete="Success"
                 app:cpb_textError="Error"
-                app:cpb_textIdle="Publish"/>
+                app:cpb_textIdle="Publish"
+                app:cpb_selectorIdle="@drawable/idle_state_selector"
+                app:cpb_colorIndicator="@color/cpb_red"
+                app:cpb_colorIndicatorBackground="@color/cpb_grey"
+                app:cpb_colorProgress="@android:color/transparent"/>
         </LinearLayout>
     </LinearLayout>
 

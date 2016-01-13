@@ -3,7 +3,9 @@ package pavel.rdtltd.placehunter.ui.createmarker;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -56,7 +58,7 @@ import retrofit.Retrofit;
  */
 public class CreateMarkerActivity extends AppCompatActivity {
 
-    private static final int TAKE_PICTURE_CODE = 0;
+    private static final int TAKE_PICTURE_CODE = 0, GALLERY_PICTURE_CODE = 1;
     private int pickerStatus = 0, pickerValue = 2;
     private LinearLayout picker;
     private Toolbar toolbar;
@@ -86,7 +88,20 @@ public class CreateMarkerActivity extends AppCompatActivity {
         setOnClickListeners();
         setBackground();
 
-        //publish.setIndeterminateProgressMode(true);
+        publish.setIndeterminateProgressMode(true);
+        publish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println(publish.getProgress());
+                if (publish.getProgress() == 50) {
+                    publish.setProgress(100);
+                } else if (publish.getProgress() == 100) {
+                    publish.setProgress(0);
+                } else if (publish.getProgress() == 0) {
+                    publish.setProgress(50);
+                }
+            }
+        });
         //publish.setProgress(50);
         updateLifetimeView();
     }
@@ -102,10 +117,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
         pictureView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (takePicture.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePicture, TAKE_PICTURE_CODE);
-                }
+
+                showPhotoDialog();
             }
         });
         picker.setOnClickListener(new View.OnClickListener() {
@@ -126,6 +139,29 @@ public class CreateMarkerActivity extends AppCompatActivity {
         publish = (CircularProgressButton) findViewById(R.id.publish);
     }
 
+    private void showPhotoDialog() {
+        String[] values = {"Take a picture", "Chose from gallery"};
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_DialogStyle);
+        builder.setTitle(R.string.photo_dialog_title)
+                .setItems(values, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        switch (which) {
+                            case 0: Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                    if (takePicture.resolveActivity(getPackageManager()) != null) {
+                                        startActivityForResult(takePicture, TAKE_PICTURE_CODE);
+                                    }
+                                    break;
+
+                            case 1: Intent galleryIntent = new Intent(
+                                    Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(galleryIntent, GALLERY_PICTURE_CODE);
+                        }
+                    }
+                });
+        builder.show();
+    }
     private void showLifetimeDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppTheme_DialogStyle);
         LayoutInflater inflater = getLayoutInflater();
@@ -247,7 +283,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case TAKE_PICTURE_CODE:
-                if (resultCode == RESULT_OK) {
+                if (resultCode == RESULT_OK && data != null) {
                     Bundle extras = data.getExtras();
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     Drawable drawable = new BitmapDrawable(imageBitmap);
@@ -255,9 +291,44 @@ public class CreateMarkerActivity extends AppCompatActivity {
                 }
 
                 break;
+
+            case GALLERY_PICTURE_CODE:
+                if (resultCode == RESULT_OK && data != null) {
+                    Uri selectedImageUri = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+
+                    Cursor cursor = getContentResolver().query(
+                            selectedImageUri, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String filePath = cursor.getString(columnIndex);
+                    cursor.close();
+
+                    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                    Drawable drawable = new BitmapDrawable(bitmap);
+                    pictureView.setBackground(drawable);
+                }
         }
     }
 
+    private Bitmap getScaledImage(String filePath) {
+        int targetW = pictureView.getWidth();
+        int targetH = pictureView.getHeight();
+        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        bmOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, bmOptions);
+        int photoW = bmOptions.outWidth;
+        int photoH = bmOptions.outHeight;
+        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
+
+        bmOptions.inJustDecodeBounds = false;
+        bmOptions.inSampleSize = scaleFactor;
+        bmOptions.inPurgeable = true;
+
+        Bitmap bitmap = BitmapFactory.decodeFile(filePath, bmOptions);
+
+        return bitmap;
+    }
     public static void setPickerValues(NumberPicker numberPicker, int minValue, int maxValue, int currentValue) {
         numberPicker.setMinValue(minValue);
         numberPicker.setMaxValue(maxValue);
