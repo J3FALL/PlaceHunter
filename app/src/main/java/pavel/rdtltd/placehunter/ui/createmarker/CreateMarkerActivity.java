@@ -23,19 +23,24 @@ import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.SeekBar;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 
 import com.dd.CircularProgressButton;
@@ -59,13 +64,15 @@ import retrofit.Retrofit;
 public class CreateMarkerActivity extends AppCompatActivity {
 
     private static final int TAKE_PICTURE_CODE = 0, GALLERY_PICTURE_CODE = 1;
+    private int publishStatus = 0;
     private int pickerStatus = 0, pickerValue = 2;
     private LinearLayout picker;
     private Toolbar toolbar;
     private LinearLayout snapshot, background;
     private ImageView pictureView;
     private TextView lifetimeView;
-    private CircularProgressButton publish;
+    private LinearLayout publish;
+    private TextSwitcher textSwitcher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,22 +95,23 @@ public class CreateMarkerActivity extends AppCompatActivity {
         setOnClickListeners();
         setBackground();
 
-        publish.setIndeterminateProgressMode(true);
-        publish.setOnClickListener(new View.OnClickListener() {
+        updateLifetimeView();
+
+        textSwitcher.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_top));
+        textSwitcher.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom));
+        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
-            public void onClick(View v) {
-                System.out.println(publish.getProgress());
-                if (publish.getProgress() == 50) {
-                    publish.setProgress(100);
-                } else if (publish.getProgress() == 100) {
-                    publish.setProgress(0);
-                } else if (publish.getProgress() == 0) {
-                    publish.setProgress(50);
-                }
+            public View makeView() {
+                TextView textView = new TextView(CreateMarkerActivity.this);
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
+                textView.setTextColor(getResources().getColor(R.color.white));
+                textView.setGravity(Gravity.CENTER_HORIZONTAL);
+                textView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+                return textView;
             }
         });
-        //publish.setProgress(50);
-        updateLifetimeView();
+
+        textSwitcher.setText("First");
     }
 
 
@@ -127,6 +135,18 @@ public class CreateMarkerActivity extends AppCompatActivity {
                 showLifetimeDialog();
             }
         });
+        publish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (publishStatus == 0) {
+                    textSwitcher.setText("Second");
+                    publishStatus = 1;
+                } else {
+                    textSwitcher.setText("First");
+                    publishStatus = 0;
+                }
+            }
+        });
     }
 
     private void bindViews() {
@@ -136,7 +156,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
         background = (LinearLayout) findViewById(R.id.background);
         pictureView = (ImageView) findViewById(R.id.pictureView);
         lifetimeView = (TextView) findViewById(R.id.lifetimeView);
-        publish = (CircularProgressButton) findViewById(R.id.publish);
+        publish = (LinearLayout) findViewById(R.id.publish);
+        textSwitcher = (TextSwitcher) findViewById(R.id.textSwitcher);
     }
 
     private void showPhotoDialog() {
