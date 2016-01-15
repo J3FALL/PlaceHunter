@@ -31,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -71,8 +72,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
     private LinearLayout snapshot, background;
     private ImageView pictureView;
     private TextView lifetimeView;
-    private LinearLayout publish;
-    private TextSwitcher textSwitcher;
+    private Button publish;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,21 +98,6 @@ public class CreateMarkerActivity extends AppCompatActivity {
 
         updateLifetimeView();
 
-        textSwitcher.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_in_top));
-        textSwitcher.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom));
-        textSwitcher.setFactory(new ViewSwitcher.ViewFactory() {
-            @Override
-            public View makeView() {
-                TextView textView = new TextView(CreateMarkerActivity.this);
-                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 22);
-                textView.setTextColor(getResources().getColor(R.color.white));
-                textView.setGravity(Gravity.CENTER_HORIZONTAL);
-                textView.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-                return textView;
-            }
-        });
-
-        textSwitcher.setText("First");
     }
 
 
@@ -135,18 +121,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
                 showLifetimeDialog();
             }
         });
-        publish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (publishStatus == 0) {
-                    textSwitcher.setText("Second");
-                    publishStatus = 1;
-                } else {
-                    textSwitcher.setText("First");
-                    publishStatus = 0;
-                }
-            }
-        });
+
     }
 
     private void bindViews() {
@@ -156,8 +131,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
         background = (LinearLayout) findViewById(R.id.background);
         pictureView = (ImageView) findViewById(R.id.pictureView);
         lifetimeView = (TextView) findViewById(R.id.lifetimeView);
-        publish = (LinearLayout) findViewById(R.id.publish);
-        textSwitcher = (TextSwitcher) findViewById(R.id.textSwitcher);
+        publish = (Button) findViewById(R.id.publish);
     }
 
     private void showPhotoDialog() {
