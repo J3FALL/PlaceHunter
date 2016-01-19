@@ -64,6 +64,7 @@ import retrofit.Retrofit;
 public class MainActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private FloatingActionButton fab;
 
     private int status;
 
@@ -73,46 +74,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        bindViews();
         status = 0;
         //toolbar.setNavigationIcon(R.mipmap.ic_action_dehaze);
-        if (toolbar != null) {
-            setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-        }
 
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("YOUR");
-        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName("ALL");
-        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName("FAVOURITE");
-        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withName("FRIEND'S");
-        AccountHeader header = new AccountHeaderBuilder()
-                .withActivity(this)
-                .withDividerBelowHeader(false)
-                .build();
-        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
-        final DisplayMetrics displayMetrics = new DisplayMetrics();
-        wm.getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels / 2;
-        Drawer result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withAccountHeader(header)
-                .withDrawerWidthDp(width)
-                .withActionBarDrawerToggleAnimated(true)
-                .addDrawerItems(
-                        new DividerDrawerItem(),
-                        item1,
-                        new DividerDrawerItem(),
-                        item2,
-                        new DividerDrawerItem(),
-                        item3,
-                        new DividerDrawerItem(),
-                        item4,
-                        new DividerDrawerItem()
-                )
-                .build();
+        initToolbar();
+        initDrawer();
+
+        setOnClickListeners();
         // Set the list's click listener
 
         /*viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -164,12 +133,66 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
-        //test git
-        Intent intent = new Intent(this, CreateMarkerActivity.class);
-        startActivity(intent);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.map, new MapFragment())
+                .commit();
     }
 
 
+    private void bindViews() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+    }
+
+    private void initToolbar() {
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+    }
+    private void initDrawer() {
+        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("YOUR");
+        PrimaryDrawerItem item2 = new PrimaryDrawerItem().withName("ALL");
+        PrimaryDrawerItem item3 = new PrimaryDrawerItem().withName("FAVOURITE");
+        PrimaryDrawerItem item4 = new PrimaryDrawerItem().withName("FRIEND'S");
+        AccountHeader header = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withDividerBelowHeader(false)
+                .build();
+        WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
+        final DisplayMetrics displayMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels / 2;
+        Drawer result = new DrawerBuilder()
+                .withActivity(this)
+                .withToolbar(toolbar)
+                .withAccountHeader(header)
+                .withDrawerWidthDp(width)
+                .withActionBarDrawerToggleAnimated(true)
+                .addDrawerItems(
+                        new DividerDrawerItem(),
+                        item1,
+                        new DividerDrawerItem(),
+                        item2,
+                        new DividerDrawerItem(),
+                        item3,
+                        new DividerDrawerItem(),
+                        item4,
+                        new DividerDrawerItem()
+                )
+                .build();
+    }
+
+    private void setOnClickListeners() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), CreateMarkerActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
     @Override
     protected void onResume() {
         super.onResume();
