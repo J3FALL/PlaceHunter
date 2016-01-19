@@ -1,6 +1,8 @@
 package pavel.rdtltd.placehunter;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +36,7 @@ import android.widget.RelativeLayout;
 import android.view.animation.TranslateAnimation;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -43,6 +46,7 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,11 +72,14 @@ public class MainActivity extends AppCompatActivity {
 
     private int status;
 
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        context = this;
 
         bindViews();
         status = 0;
@@ -188,8 +195,18 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), CreateMarkerActivity.class);
-                startActivity(intent);
+                MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                fragment.makeSnapshot(new GoogleMap.SnapshotReadyCallback() {
+                    @Override
+                    public void onSnapshotReady(Bitmap bitmap) {
+                        Intent intent = new Intent(context, CreateMarkerActivity.class);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] bytes = stream.toByteArray();
+                        intent.putExtra("snapshot", bytes);
+                        startActivity(intent);
+                    }
+                });
             }
         });
     }

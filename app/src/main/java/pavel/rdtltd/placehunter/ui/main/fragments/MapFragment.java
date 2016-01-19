@@ -62,4 +62,8 @@ public class MapFragment extends android.support.v4.app.Fragment{
         map.setMyLocationEnabled(true);//выводим индикатор своего местоположения
     }
 
+    public void makeSnapshot(GoogleMap.SnapshotReadyCallback callback) {
+        map.snapshot(callback);
+    }
+
 }

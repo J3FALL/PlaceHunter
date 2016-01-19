@@ -73,14 +73,17 @@ public class CreateMarkerActivity extends AppCompatActivity {
     private ImageView pictureView;
     private TextView lifetimeView;
     private Button publish;
+    private Bitmap snapshotImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_marker);
 
-
-
+        Intent intent = getIntent();
+        byte[] bytes = intent.getByteArrayExtra("snapshot");
+        snapshotImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);;
+        //System.out.println(snapshotImage);
         //Typeface typeface = Typeface.createFromAsset(getAssets(), "font/Roboto-Thin.ttf");
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -105,6 +108,9 @@ public class CreateMarkerActivity extends AppCompatActivity {
         Drawable bitmapDrawable =   getDrawable(R.drawable.background);
         bitmapDrawable.setAlpha(210);
         background.setBackground(bitmapDrawable);
+
+        Drawable drawable = new BitmapDrawable(snapshotImage);
+        snapshot.setBackground(drawable);
     }
     private void setOnClickListeners() {
 
