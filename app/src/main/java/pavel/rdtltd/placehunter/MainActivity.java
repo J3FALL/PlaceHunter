@@ -45,6 +45,7 @@ import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -154,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     private void initToolbar() {
         if (toolbar != null) {
             setSupportActionBar(toolbar);
+            getSupportActionBar().setTitle("ALL MARKS");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
@@ -188,7 +190,30 @@ public class MainActivity extends AppCompatActivity {
                         item4,
                         new DividerDrawerItem()
                 )
+                .withSelectedItemByPosition(4)
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        System.out.println(position);
+                        switch (position) {
+                            case 2:
+                                getSupportActionBar().setTitle("YOUR MARKS");
+                                break;
+                            case 4:
+                                getSupportActionBar().setTitle("ALL MARKS");
+                                break;
+                            case 6:
+                                getSupportActionBar().setTitle("FAVOURITE MARKS");
+                                break;
+                            case 8:
+                                getSupportActionBar().setTitle("FRIENDS MARKS");
+                                break;
+                        }
+                        return false;
+                    }
+                })
                 .build();
+
     }
 
     private void setOnClickListeners() {
