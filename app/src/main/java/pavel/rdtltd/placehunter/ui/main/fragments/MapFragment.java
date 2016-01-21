@@ -1,29 +1,30 @@
 package pavel.rdtltd.placehunter.ui.main.fragments;
 
 
-import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.maps.android.clustering.ClusterManager;
 
-import java.util.Calendar;
-
-import pavel.rdtltd.placehunter.MainActivity;
 import pavel.rdtltd.placehunter.R;
+import pavel.rdtltd.placehunter.models.AbstractMarker;
+import pavel.rdtltd.placehunter.models.BaseMarker;
+import pavel.rdtltd.placehunter.utils.ClusterRenderer;
 
 /**
  * Created by PAVEL on 29.11.2015.
  */
 public class MapFragment extends android.support.v4.app.Fragment{
 
+    private Context context;
     private GoogleMap map;
-    private static Double latitude, longitude;
-
+    //private static Double latitude, longitude;
+    private ClusterManager<AbstractMarker> clusterManager;
     public MapFragment() {
 
     }
@@ -34,13 +35,18 @@ public class MapFragment extends android.support.v4.app.Fragment{
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.map_fragment, container, false);
 
-        latitude = 26.78;
-        longitude = 72.56;
+
         setUpMapIfNeeded();
         return view;
     }
@@ -54,6 +60,24 @@ public class MapFragment extends android.support.v4.app.Fragment{
             // Check if we were successful in obtaining the map.
             if (map != null) {
                 setUpMap();
+
+                clusterManager = new ClusterManager<AbstractMarker>(context, map);
+                clusterManager.setRenderer(new ClusterRenderer(context, map, clusterManager));
+                map.setOnCameraChangeListener(clusterManager);
+
+                double longitude = 35.0;
+                double latitude = 35.0;
+                double curLong = longitude - 2.0;
+                double curLat = latitude - 2.0;
+
+                while (curLong != longitude + 2.0) {
+                   curLat = latitude - 2.0;
+                   while (curLat != latitude + 2.0) {
+                       clusterManager.addItem(new BaseMarker(curLat, curLong));
+                       curLat += 0.25;
+                   }
+                   curLong += 0.25;
+                }
             }
         }
     }
