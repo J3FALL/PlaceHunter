@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 
 import pavel.rdtltd.placehunter.R;
@@ -23,6 +24,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
 
     private Context context;
     private GoogleMap map;
+    private Bundle savedInstanceState;
     //private static Double latitude, longitude;
     private ClusterManager<AbstractMarker> clusterManager;
     public MapFragment() {
@@ -32,6 +34,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
     }
 
     @Override
@@ -83,7 +86,19 @@ public class MapFragment extends android.support.v4.app.Fragment{
     }
 
     private void setUpMap() {
-        map.setMyLocationEnabled(true);//выводим индикатор своего местоположения
+        map.setMyLocationEnabled(true);
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+                View v = getLayoutInflater(savedInstanceState).inflate(R.layout.custom_infowindow, null);
+                return v;
+            }
+        });
     }
 
     public void makeSnapshot(GoogleMap.SnapshotReadyCallback callback) {
