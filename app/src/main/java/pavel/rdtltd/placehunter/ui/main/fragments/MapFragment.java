@@ -2,6 +2,7 @@ package pavel.rdtltd.placehunter.ui.main.fragments;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.google.maps.android.clustering.ClusterManager;
 import pavel.rdtltd.placehunter.R;
 import pavel.rdtltd.placehunter.models.AbstractMarker;
 import pavel.rdtltd.placehunter.models.BaseMarker;
+import pavel.rdtltd.placehunter.ui.MarkerInfoActivity;
 import pavel.rdtltd.placehunter.utils.ClusterRenderer;
 
 /**
@@ -97,6 +99,16 @@ public class MapFragment extends android.support.v4.app.Fragment{
             public View getInfoContents(Marker marker) {
                 View v = getLayoutInflater(savedInstanceState).inflate(R.layout.custom_infowindow, null);
                 return v;
+            }
+        });
+
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                Intent intent = new Intent(context, MarkerInfoActivity.class);
+                startActivity(intent);
+                return false;
             }
         });
     }
