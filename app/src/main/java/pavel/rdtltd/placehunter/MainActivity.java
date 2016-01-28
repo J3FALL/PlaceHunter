@@ -168,6 +168,8 @@ public class MainActivity extends AppCompatActivity {
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withDividerBelowHeader(false)
+                .withProfileImagesClickable(false)
+                .withSelectionListEnabled(false)
                 .build();
         WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         final DisplayMetrics displayMetrics = new DisplayMetrics();
