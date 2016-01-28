@@ -15,6 +15,7 @@
     <color name="dialog_text_pressed">#ffffff</color>
     <color name="dialog_text_unpressed">#6bb1ee</color>
     <color name="black_background">#000000</color>
+    <color name="create_marker_background">#031116</color>
     <color name="cpb_red">#FF5252</color>
     <color name="cpb_red_pressed">#E54A4A</color>
 </resources>

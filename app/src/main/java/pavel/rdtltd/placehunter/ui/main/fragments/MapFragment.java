@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
 
@@ -89,6 +90,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
 
     private void setUpMap() {
         map.setMyLocationEnabled(true);
+        map.getUiSettings().setMapToolbarEnabled(false); //remove map toolbar
         map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
