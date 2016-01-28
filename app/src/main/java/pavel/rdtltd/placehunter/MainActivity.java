@@ -178,7 +178,27 @@ public class MainActivity extends AppCompatActivity {
                 .withToolbar(toolbar)
                 .withAccountHeader(header)
                 .withDrawerWidthDp(width)
+                .withRootView(R.id.drawer_layout)
+                .withActionBarDrawerToggle(true)
                 .withActionBarDrawerToggleAnimated(true)
+                .withOnDrawerListener(new Drawer.OnDrawerListener() {
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        //fab.hide();
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        fab.show();
+                    }
+
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+                        if (fab.isShown()) {
+                            fab.hide();
+                        }
+                    }
+                })
                 .addDrawerItems(
                         new DividerDrawerItem(),
                         item1,
