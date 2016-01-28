@@ -95,13 +95,23 @@
             android:gravity="center"
             android:layout_weight="10">
 
+            <ImageView
+                android:id="@+id/like"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/ic_arrow_drop_up_white_24dp"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textColor="@color/white"
-                android:text="SHARE"
+                android:text="+21"
                 android:textSize="25dp"/>
+            <ImageView
+                android:id="@+id/dislike"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@mipmap/ic_arrow_drop_down_white_24dp"/>
         </LinearLayout>
     </LinearLayout>
 
