@@ -5,11 +5,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
@@ -34,20 +40,21 @@ public class MarkerInfoActivity extends AppCompatActivity {
     private Animator mCurrentAnimator;
     private int mShortAnimationDuration;
     private ImageView image;
-
+    private TextView title;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_marker);
 
         image = (ImageView) findViewById(R.id.image);
+        title = (TextView) findViewById(R.id.title);
         initToolbar();
 
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //System.out.println(image.getDrawable());
-                zoomImageView(image, image.getBackground());
+                zoomImageView(image, image.getDrawable());
             }
         });
 
@@ -91,6 +98,13 @@ public class MarkerInfoActivity extends AppCompatActivity {
         if (mCurrentAnimator != null) {
             mCurrentAnimator.cancel();
         }
+
+        getSupportActionBar().setTitle(title.getText());
+        getWindow().setStatusBarColor(Color.BLACK);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        final LinearLayout photoContainer = (LinearLayout) findViewById(R.id.photoContainer);
         final ImageView expandedImageView = (ImageView) findViewById(
                 R.id.expanded_image);
         expandedImageView.setImageDrawable(drawable);
@@ -121,6 +135,7 @@ public class MarkerInfoActivity extends AppCompatActivity {
         }
 
         thumbView.setAlpha(0f);
+        photoContainer.setVisibility(View.VISIBLE);
         expandedImageView.setVisibility(View.VISIBLE);
         expandedImageView.setPivotX(0f);
         expandedImageView.setPivotY(0f);
@@ -178,14 +193,27 @@ public class MarkerInfoActivity extends AppCompatActivity {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         thumbView.setAlpha(1f);
+                        photoContainer.setVisibility(View.GONE);
                         expandedImageView.setVisibility(View.GONE);
+
+                        getSupportActionBar().setTitle("Подробнее");
+                        getWindow().setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+                        getSupportActionBar().setDisplayShowTitleEnabled(false);
+                        getSupportActionBar().setDisplayShowTitleEnabled(true);
                         mCurrentAnimator = null;
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
                         thumbView.setAlpha(1f);
+                        photoContainer.setVisibility(View.GONE);
                         expandedImageView.setVisibility(View.GONE);
+                        getSupportActionBar().setTitle("Подробнее");
+                        getWindow().setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
+                        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary)));
+                        getSupportActionBar().setDisplayShowTitleEnabled(false);
+                        getSupportActionBar().setDisplayShowTitleEnabled(true);
                         mCurrentAnimator = null;
                     }
                 });
