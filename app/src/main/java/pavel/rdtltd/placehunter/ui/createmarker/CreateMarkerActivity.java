@@ -44,7 +44,7 @@ import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 
-import com.dd.CircularProgressButton;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -58,6 +58,7 @@ import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by PAVEL on 29.11.2015.
@@ -74,6 +75,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
     private TextView lifetimeView;
     private Button publish;
     private Bitmap snapshotImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
