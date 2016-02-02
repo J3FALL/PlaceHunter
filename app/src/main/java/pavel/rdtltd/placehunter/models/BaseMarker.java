@@ -1,10 +1,17 @@
 package pavel.rdtltd.placehunter.models;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import pavel.rdtltd.placehunter.PlaceHunter;
 import pavel.rdtltd.placehunter.R;
 
 /**
@@ -29,7 +36,9 @@ public class BaseMarker extends AbstractMarker {
     public static void setBitmapDescriptor() {
         if (baseMarkerIcon == null) {
             //choose markerIcon
-            baseMarkerIcon = BitmapDescriptorFactory.fromResource(R.drawable.bluecirclethumb);
+            Context context = PlaceHunter.getContext();
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.mapicon), 80, 80, false);
+            baseMarkerIcon = BitmapDescriptorFactory.fromBitmap(scaledBitmap);
         }
     }
 }

@@ -1,5 +1,7 @@
 package pavel.rdtltd.placehunter.models;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterItem;
@@ -12,7 +14,7 @@ public abstract class AbstractMarker implements ClusterItem {
     protected double longitude;
 
     protected MarkerOptions marker;
-
+    
     @Override
     public LatLng getPosition() {
         return new LatLng(latitude, longitude);
