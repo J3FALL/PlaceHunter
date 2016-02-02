@@ -12,17 +12,20 @@ import com.google.maps.android.clustering.ClusterItem;
 public abstract class AbstractMarker implements ClusterItem {
     protected double latitude;
     protected double longitude;
+    protected String title;
 
     protected MarkerOptions marker;
-    
+
     @Override
     public LatLng getPosition() {
         return new LatLng(latitude, longitude);
     }
 
-    protected AbstractMarker(double latitude, double longitude) {
+    protected AbstractMarker(double latitude, double longitude, String title) {
         setLatitude(latitude);
         setLongitude(longitude);
+        setTitle(title);
+
     }
 
     @Override
@@ -50,5 +53,13 @@ public abstract class AbstractMarker implements ClusterItem {
 
     public void setMarker(MarkerOptions marker) {
         this.marker = marker;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

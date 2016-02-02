@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.Marker;
+import com.google.gson.Gson;
 import com.google.maps.android.clustering.ClusterManager;
 
 import pavel.rdtltd.placehunter.R;
@@ -30,6 +31,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
     private Bundle savedInstanceState;
     //private static Double latitude, longitude;
     private ClusterManager<AbstractMarker> clusterManager;
+    private AbstractMarker clickedMarker;
     public MapFragment() {
 
     }
@@ -69,7 +71,44 @@ public class MapFragment extends android.support.v4.app.Fragment{
 
                 clusterManager = new ClusterManager<AbstractMarker>(context, map);
                 clusterManager.setRenderer(new ClusterRenderer(context, map, clusterManager));
+
                 map.setOnCameraChangeListener(clusterManager);
+                map.setOnMarkerClickListener(clusterManager);
+                map.setInfoWindowAdapter(clusterManager.getMarkerManager());
+                map.setOnInfoWindowClickListener(clusterManager);
+                clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<AbstractMarker>() {
+                    @Override
+                    public void onClusterItemInfoWindowClick(AbstractMarker abstractMarker) {
+                        //launch MarkerInfoActivity
+                        System.out.println("!");
+                        Intent intent = new Intent(context, MarkerInfoActivity.class);
+                        intent.putExtra("title", abstractMarker.getMarker().getTitle());
+                        startActivity(intent);
+                    }
+                });
+                clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<AbstractMarker>() {
+                    @Override
+                    public boolean onClusterItemClick(AbstractMarker abstractMarker) {
+                        clickedMarker = abstractMarker;
+                        return false;
+                    }
+                });
+                clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        return null;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        View v = getLayoutInflater(savedInstanceState).inflate(R.layout.custom_infowindow, null);
+                        return v;
+                    }
+                });
+
+
+
+
 
                 double longitude = 35.0;
                 double latitude = 35.0;
@@ -79,7 +118,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
                 while (curLong != longitude + 2.0) {
                    curLat = latitude - 2.0;
                    while (curLat != latitude + 2.0) {
-                       clusterManager.addItem(new BaseMarker(curLat, curLong));
+                       clusterManager.addItem(new BaseMarker(curLat, curLong, "YOYO this is test"));
                        curLat += 0.25;
                    }
                    curLong += 0.25;
@@ -91,7 +130,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
     private void setUpMap() {
         map.setMyLocationEnabled(true);
         map.getUiSettings().setMapToolbarEnabled(false); //remove map toolbar
-        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+        /*map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
                 return null;
@@ -112,7 +151,8 @@ public class MapFragment extends android.support.v4.app.Fragment{
                 startActivity(intent);
                 return false;
             }
-        });
+        });*/
+
     }
 
     public void makeSnapshot(GoogleMap.SnapshotReadyCallback callback) {

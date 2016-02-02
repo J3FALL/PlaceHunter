@@ -26,9 +26,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.google.gson.Gson;
+
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 import pavel.rdtltd.placehunter.R;
+import pavel.rdtltd.placehunter.models.AbstractMarker;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -41,13 +44,18 @@ public class MarkerInfoActivity extends AppCompatActivity {
     private int mShortAnimationDuration;
     private ImageView image;
     private TextView title;
+    private AbstractMarker marker = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_marker);
 
+
+        String markerTitle = getIntent().getExtras().getString("title");
         image = (ImageView) findViewById(R.id.image);
         title = (TextView) findViewById(R.id.title);
+        title.setText(markerTitle);
         initToolbar();
 
         image.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +68,8 @@ public class MarkerInfoActivity extends AppCompatActivity {
 
         mShortAnimationDuration = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);
+
+
     }
 
     private void initToolbar() {

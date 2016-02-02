@@ -21,12 +21,13 @@ public class BaseMarker extends AbstractMarker {
 
     private static BitmapDescriptor baseMarkerIcon = null;
 
-    public BaseMarker(double latitude, double longitude) {
-        super(latitude, longitude);
+    public BaseMarker(double latitude, double longitude, String title) {
+        super(latitude, longitude, title);
         setBitmapDescriptor();
         setMarker(new MarkerOptions()
                     .position(new LatLng(getLatitude(), getLongitude()))
-                    .icon(baseMarkerIcon));
+                    .icon(baseMarkerIcon)
+                    .title(getTitle()));
     }
 
     public String toString() {
