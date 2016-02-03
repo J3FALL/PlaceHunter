@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -102,6 +103,9 @@ public class MapFragment extends android.support.v4.app.Fragment{
                     @Override
                     public View getInfoContents(Marker marker) {
                         View v = getLayoutInflater(savedInstanceState).inflate(R.layout.custom_infowindow, null);
+
+                        TextView title = (TextView) v.findViewById(R.id.title);
+                        title.setText(clickedMarker.getTitle());
                         return v;
                     }
                 });
