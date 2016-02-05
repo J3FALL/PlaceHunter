@@ -3,6 +3,7 @@ package pavel.rdtltd.placehunter.ui.main.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
 import com.google.maps.android.clustering.ClusterManager;
@@ -33,6 +35,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
     //private static Double latitude, longitude;
     private ClusterManager<AbstractMarker> clusterManager;
     private AbstractMarker clickedMarker;
+    private Location myLocation;
     public MapFragment() {
 
     }
@@ -133,7 +136,15 @@ public class MapFragment extends android.support.v4.app.Fragment{
 
     private void setUpMap() {
         map.setMyLocationEnabled(true);
-        map.getUiSettings().setMapToolbarEnabled(false); //remove map toolbar
+        map.getUiSettings().setMapToolbarEnabled(false);
+
+        map.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                myLocation = location;
+            }
+        });
+         //remove map toolbar
         /*map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override
             public View getInfoWindow(Marker marker) {
@@ -162,5 +173,6 @@ public class MapFragment extends android.support.v4.app.Fragment{
     public void makeSnapshot(GoogleMap.SnapshotReadyCallback callback) {
         map.snapshot(callback);
     }
+    public Location getMyLocation() { return myLocation; }
 
 }

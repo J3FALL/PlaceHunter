@@ -83,6 +83,10 @@ public class CreateMarkerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_marker);
 
         Intent intent = getIntent();
+
+        double longitude = intent.getDoubleExtra("longitude", 0);
+        double latitude = intent.getDoubleExtra("latitude", 0);
+        System.out.println(longitude + " " + latitude);
         byte[] bytes = intent.getByteArrayExtra("snapshot");
         snapshotImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);;
         //System.out.println(snapshotImage);

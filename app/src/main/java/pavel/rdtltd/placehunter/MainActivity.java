@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -242,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+                final MapFragment fragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                 fragment.makeSnapshot(new GoogleMap.SnapshotReadyCallback() {
                     @Override
                     public void onSnapshotReady(Bitmap bitmap) {
@@ -251,6 +252,10 @@ public class MainActivity extends AppCompatActivity {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                         byte[] bytes = stream.toByteArray();
                         intent.putExtra("snapshot", bytes);
+
+                        Location myLocation = fragment.getMyLocation();
+                        intent.putExtra("latitude", myLocation.getLatitude());
+                        intent.putExtra("longitude", myLocation.getLongitude());
                         startActivity(intent);
                     }
                 });
