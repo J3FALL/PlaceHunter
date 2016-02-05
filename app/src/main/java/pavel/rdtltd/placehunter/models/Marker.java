@@ -42,17 +42,16 @@ public class Marker extends Model{
     private String type;
 
     @Expose
-    @Column(name = "rateUp")
-    private int rateUp;
-
-    @Expose
-    @Column(name = "rateDown")
-    private int rateDown;
-
-    @Expose
     @Column(name = "timestamp")
     private Timestamp timestamp;
 
+    @Expose
+    @Column(name = "rate")
+    private int rate;
+
+    @Expose
+    @Column(name = "pic")
+    private String pic;
 
     public Marker() {
         super();
@@ -63,8 +62,8 @@ public class Marker extends Model{
         title = "";
         snippet = "";
         type = "";
-        rateUp = 0;
-        rateDown = 0;
+        rate = 0;
+        pic = "";
     }
     public int getmarkerId() {
         return markerId;
@@ -123,27 +122,27 @@ public class Marker extends Model{
         this.type = type;
     }
 
-    public int getRateUp() {
-        return rateUp;
-    }
-
-    public void setRateUp(int rateUp) {
-        this.rateUp = rateUp;
-    }
-
-    public int getRateDown() {
-        return rateDown;
-    }
-
-    public void setRateDown(int rateDown) {
-        this.rateDown = rateDown;
-    }
-
     public Timestamp getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public void setPic(String pic) {
+        this.pic = pic;
     }
 }

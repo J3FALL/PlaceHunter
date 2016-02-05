@@ -23,6 +23,7 @@ import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -48,6 +49,7 @@ import android.widget.ViewSwitcher;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.reflect.Field;
 
 import pavel.rdtltd.placehunter.R;
@@ -66,7 +68,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class CreateMarkerActivity extends AppCompatActivity {
 
     private static final int TAKE_PICTURE_CODE = 0, GALLERY_PICTURE_CODE = 1;
-    private int publishStatus = 0;
+    private boolean hasPicture = false;
     private int pickerStatus = 0, pickerValue = 2;
     private LinearLayout picker;
     private Toolbar toolbar;
@@ -75,6 +77,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
     private TextView lifetimeView;
     private Button publish;
     private Bitmap snapshotImage;
+    private double myLongitude, myLatitude;
 
 
     @Override
@@ -84,9 +87,9 @@ public class CreateMarkerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        double longitude = intent.getDoubleExtra("longitude", 0);
-        double latitude = intent.getDoubleExtra("latitude", 0);
-        System.out.println(longitude + " " + latitude);
+        myLongitude = intent.getDoubleExtra("longitude", 0);
+        myLatitude = intent.getDoubleExtra("latitude", 0);
+
         byte[] bytes = intent.getByteArrayExtra("snapshot");
         snapshotImage = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);;
         //System.out.println(snapshotImage);
@@ -131,6 +134,27 @@ public class CreateMarkerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 showLifetimeDialog();
+            }
+        });
+
+        publish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isCorrect()) {
+                    String encodedImage = "";
+                    if (hasPicture) {
+                        //drawable to Base64String
+                        BitmapDrawable bitmapDrawable = (BitmapDrawable) pictureView.getDrawable();
+                        Bitmap bitmap = bitmapDrawable.getBitmap();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                        byte[] b = baos.toByteArray();
+                        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                    }
+                    //post
+                    //waiting
+                    //toast if succeed
+                }
             }
         });
 
@@ -295,6 +319,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     Drawable drawable = new BitmapDrawable(imageBitmap);
                     pictureView.setBackground(drawable);
+
+                    hasPicture = true;
                 }
 
                 break;
@@ -314,6 +340,8 @@ public class CreateMarkerActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeFile(filePath);
                     Drawable drawable = new BitmapDrawable(bitmap);
                     pictureView.setBackground(drawable);
+
+                    hasPicture = true;
                 }
         }
     }
@@ -370,4 +398,9 @@ public class CreateMarkerActivity extends AppCompatActivity {
         return false;
     }
 
+
+    private boolean isCorrect() {
+        //need to add
+        return true;
+    }
 }
