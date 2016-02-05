@@ -13,16 +13,27 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.maps.android.clustering.ClusterManager;
+
+import java.util.List;
 
 import pavel.rdtltd.placehunter.R;
 import pavel.rdtltd.placehunter.models.AbstractMarker;
 import pavel.rdtltd.placehunter.models.BaseMarker;
+import pavel.rdtltd.placehunter.network.RestAPI;
 import pavel.rdtltd.placehunter.ui.MarkerInfoActivity;
 import pavel.rdtltd.placehunter.utils.ClusterRenderer;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 /**
  * Created by PAVEL on 29.11.2015.
@@ -75,7 +86,6 @@ public class MapFragment extends android.support.v4.app.Fragment{
 
                 clusterManager = new ClusterManager<AbstractMarker>(context, map);
                 clusterManager.setRenderer(new ClusterRenderer(context, map, clusterManager));
-
                 map.setOnCameraChangeListener(clusterManager);
                 map.setOnMarkerClickListener(clusterManager);
                 map.setInfoWindowAdapter(clusterManager.getMarkerManager());
@@ -113,23 +123,41 @@ public class MapFragment extends android.support.v4.app.Fragment{
                     }
                 });
 
+                map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                    @Override
+                    public void onCameraChange(CameraPosition cameraPosition) {
+                        //get camera bounds
+                        clusterManager.onCameraChange(cameraPosition);
+                        LatLngBounds curBounds = map.getProjection()
+                                .getVisibleRegion().latLngBounds;
 
+                        LatLng northWest = new LatLng(curBounds.southwest.longitude, curBounds.northeast.latitude);
+                        LatLng southEast = new LatLng(curBounds.northeast.longitude, curBounds.southwest.latitude);
 
+                        System.out.println(northWest.toString() + " " + southEast.toString());
+                        final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                        Retrofit retrofit = new Retrofit.Builder()
+                                .baseUrl("http://93.100.180.230:3030")
+                                .addConverterFactory(GsonConverterFactory.create(gson))
+                                .build();
+                        RestAPI api = retrofit.create(RestAPI.class);
 
+                        //Call<List<pavel.rdtltd.placehunter.models.Marker>> call = api.getMarkers(1, 100, 1, 100);
+                        Call<List<pavel.rdtltd.placehunter.models.Marker>> call = api.getMarkers(northWest.latitude, southEast.latitude, northWest.longitude, southEast.longitude);
+                        call.enqueue(new Callback<List<pavel.rdtltd.placehunter.models.Marker>>() {
+                            @Override
+                            public void onResponse(Response<List<pavel.rdtltd.placehunter.models.Marker>> response, Retrofit retrofit) {
+                                if (response.body() != null) System.out.println(response.body().get(0).getTitle());
+                            }
 
-                double longitude = 35.0;
-                double latitude = 35.0;
-                double curLong = longitude - 2.0;
-                double curLat = latitude - 2.0;
+                            @Override
+                            public void onFailure(Throwable t) {
+                                System.out.println(t.toString());
+                            }
+                        });
+                    }
+                });
 
-                while (curLong != longitude + 2.0) {
-                   curLat = latitude - 2.0;
-                   while (curLat != latitude + 2.0) {
-                       clusterManager.addItem(new BaseMarker(curLat, curLong, "YOYO this is test"));
-                       curLat += 0.25;
-                   }
-                   curLong += 0.25;
-                }
             }
         }
     }
@@ -144,6 +172,7 @@ public class MapFragment extends android.support.v4.app.Fragment{
                 myLocation = location;
             }
         });
+
          //remove map toolbar
         /*map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
             @Override

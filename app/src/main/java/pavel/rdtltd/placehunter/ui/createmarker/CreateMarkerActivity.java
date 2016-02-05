@@ -78,7 +78,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
     private Button publish;
     private Bitmap snapshotImage;
     private double myLongitude, myLatitude;
-
+    private EditText title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,17 +141,48 @@ public class CreateMarkerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isCorrect()) {
-                    String encodedImage = "";
+                    final Marker marker = new Marker();
+                    marker.setTitle(title.getText().toString());
+                    marker.setLatitude(myLatitude);
+                    marker.setLongitude(myLongitude);
+                    marker.setCreatorId(1);
                     if (hasPicture) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                BitmapDrawable bitmapDrawable = (BitmapDrawable) pictureView.getBackground();
+                                Bitmap bitmap = bitmapDrawable.getBitmap();
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                byte[] b = baos.toByteArray();
+                                marker.setPic(Base64.encodeToString(b, Base64.DEFAULT));
+
+                                final Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+                                Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("http://93.100.180.230:3030")
+                                        .addConverterFactory(GsonConverterFactory.create(gson))
+                                        .build();
+                                RestAPI api = retrofit.create(RestAPI.class);
+
+                                Call<String> call = api.createMarker(marker);
+                                call.enqueue(new Callback<String>() {
+                                    @Override
+                                    public void onResponse(Response<String> response, Retrofit retrofit) {
+                                        System.out.println(response.code());
+                                    }
+
+                                    @Override
+                                    public void onFailure(Throwable t) {
+                                        System.out.println(t.toString());
+                                    }
+                                });
+                            }
+                        }).start();
                         //drawable to Base64String
-                        BitmapDrawable bitmapDrawable = (BitmapDrawable) pictureView.getDrawable();
-                        Bitmap bitmap = bitmapDrawable.getBitmap();
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                        byte[] b = baos.toByteArray();
-                        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+
                     }
                     //post
+
                     //waiting
                     //toast if succeed
                 }
@@ -168,6 +199,7 @@ public class CreateMarkerActivity extends AppCompatActivity {
         pictureView = (ImageView) findViewById(R.id.pictureView);
         lifetimeView = (TextView) findViewById(R.id.lifetimeView);
         publish = (Button) findViewById(R.id.publish);
+        title = (EditText) findViewById(R.id.title);
     }
 
     private void showPhotoDialog() {
